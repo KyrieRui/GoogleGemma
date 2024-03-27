@@ -13,6 +13,9 @@ def format_prompt(message, history):
     prompt += f"<start_of_turn>user{message}<end_of_turn><start_of_turn>model"
     return prompt
 
+def upload_file(files):
+    file_paths = [file.name for file in files]
+    return file_paths
 
 def generate(prompt, history, temperature=0.7, max_new_tokens=1024, top_p=0.90, repetition_penalty=0.9):
     temperature = float(temperature)
@@ -97,6 +100,9 @@ iface = gr.ChatInterface(fn=generate,
 
 with gr.Blocks() as demo:
     gr.HTML("<center><h1>Ray Chat</h1></center>")
+    file_output = gr.File()
+    upload_button = gr.UploadButton("Click to Upload a File", file_types=["image", "video"], file_count="multiple")
+    upload_button.upload(upload_file, upload_button, file_output)
     iface.render()
     
 demo.queue().launch(show_api=False)
